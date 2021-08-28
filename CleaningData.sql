@@ -18,7 +18,7 @@ From PortfolioProject.dbo.NashvilleHousing
 Update NashvilleHousing
 SET SaleDate = CONVERT(Date,SaleDate)
 
--- If it doesn't Update properly
+-- If it doesn't Update properly use the following below
 
 ALTER TABLE NashvilleHousing
 Add SaleDateConverted Date;
@@ -29,7 +29,7 @@ SET SaleDateConverted = CONVERT(Date,SaleDate)
 
  --------------------------------------------------------------------------------------------------------------------------
 
--- Populate Property Address data
+-- Populate Property Address data using inner Joins
 
 Select *
 From PortfolioProject.dbo.NashvilleHousing
@@ -97,46 +97,6 @@ From PortfolioProject.dbo.NashvilleHousing
 
 
 
-Select OwnerAddress
-From PortfolioProject.dbo.NashvilleHousing
-
-
-Select
-PARSENAME(REPLACE(OwnerAddress, ',', '.') , 3)
-,PARSENAME(REPLACE(OwnerAddress, ',', '.') , 2)
-,PARSENAME(REPLACE(OwnerAddress, ',', '.') , 1)
-From PortfolioProject.dbo.NashvilleHousing
-
-
-
-ALTER TABLE NashvilleHousing
-Add OwnerSplitAddress Nvarchar(255);
-
-Update NashvilleHousing
-SET OwnerSplitAddress = PARSENAME(REPLACE(OwnerAddress, ',', '.') , 3)
-
-
-ALTER TABLE NashvilleHousing
-Add OwnerSplitCity Nvarchar(255);
-
-Update NashvilleHousing
-SET OwnerSplitCity = PARSENAME(REPLACE(OwnerAddress, ',', '.') , 2)
-
-
-
-ALTER TABLE NashvilleHousing
-Add OwnerSplitState Nvarchar(255);
-
-Update NashvilleHousing
-SET OwnerSplitState = PARSENAME(REPLACE(OwnerAddress, ',', '.') , 1)
-
-
-
-Select *
-From PortfolioProject.dbo.NashvilleHousing
-
-
-
 
 --------------------------------------------------------------------------------------------------------------------------
 
@@ -167,45 +127,9 @@ SET SoldAsVacant = CASE When SoldAsVacant = 'Y' THEN 'Yes'
 	   END
 
 
-
-
-
-
------------------------------------------------------------------------------------------------------------------------------------------------------------
-
--- Remove Duplicates
-
-WITH RowNumCTE AS(
-Select *,
-	ROW_NUMBER() OVER (
-	PARTITION BY ParcelID,
-				 PropertyAddress,
-				 SalePrice,
-				 SaleDate,
-				 LegalReference
-				 ORDER BY
-					UniqueID
-					) row_num
-
-From PortfolioProject.dbo.NashvilleHousing
---order by ParcelID
-)
-Select *
-From RowNumCTE
-Where row_num > 1
-Order by PropertyAddress
-
-
-
-Select *
-From PortfolioProject.dbo.NashvilleHousing
-
-
-
-
 ---------------------------------------------------------------------------------------------------------
 
--- Delete Unused Columns
+-- Deleting Unused Columns
 
 
 
